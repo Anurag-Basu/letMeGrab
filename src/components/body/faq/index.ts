@@ -1,0 +1,1 @@
+export {default as FAQSection  } from './ui/faq.component'

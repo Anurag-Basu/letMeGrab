@@ -1,0 +1,50 @@
+// styles.scss
+
+.options-container {
+  .ant-select {
+    width: 150px;
+  }
+}
+
+.product-container {
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.product-card {
+  width: 300px;
+//   height: 400px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 20px;
+
+  img {
+    object-fit: cover;
+    max-width: 100%;
+    margin: auto;
+    height: 100px;
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .description {
+    color: #777;
+    font-size: .9rem;
+    overflow-y: scroll;
+    white-space: wrap;
+  }
+
+  .price {
+    font-weight: bold;
+    color: #333;
+  }
+}
