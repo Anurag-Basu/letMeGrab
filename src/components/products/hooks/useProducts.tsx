@@ -103,9 +103,10 @@ const useProducts = (userName: string) => {
       const index = products.products.findIndex(
         (product) => product.id === values.id
       );
+      console.log(values.id, index);
 
       const selectedProduct = {
-        ...products.products[values?.id],
+        ...products.products[index],
         title: values.name as string,
         description: values.description,
         price: values.price,
@@ -124,7 +125,7 @@ const useProducts = (userName: string) => {
     //   .then((res) => console.log(res))
     //   .catch((err) => console.log(err));
   };
-
+  console.log({ allProducts });
   const onChangeCategory = (value: string) => {
     let url = `https://fakestoreapi.com/products/category/${value}`;
 
@@ -144,12 +145,13 @@ const useProducts = (userName: string) => {
 
   const showCreateProductModal = (id?: number) => {
     if (id) {
+      const index = products.products.findIndex((product) => product.id === id);
       setIsCreateOrUpdate(true);
       createUpdateForm.setFieldsValue({
-        name: allProducts[id - 1].title,
-        price: allProducts[id - 1].price,
-        description: allProducts[id - 1].description,
-        id: allProducts[id - 1].id,
+        name: allProducts[index].title,
+        price: allProducts[index].price,
+        description: allProducts[index].description,
+        id: allProducts[index].id,
       });
     }
     setIsCreateProductModal(true);
