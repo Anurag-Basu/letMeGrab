@@ -66,9 +66,11 @@ export interface DataSourceType {
 }
 
 export interface CreateProductFields {
-  name: string;
+  name?: string;
   description: string;
   price: number;
+  title?: string;
+  id?: number;
 }
 
 export interface AddProductsFormProps {
@@ -76,4 +78,14 @@ export interface AddProductsFormProps {
   closeCreateProductModal: () => void;
   isCreateProductModal: boolean;
   createUpdateForm: any;
+  showId: boolean;
+}
+
+export interface UserDataInterface {
+  password: string;
+  products: ProductsType[];
+}
+
+export interface ProductViewProps {
+  userName: string;
 }

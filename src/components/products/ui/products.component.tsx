@@ -3,10 +3,11 @@ import useProducts from "../hooks/useProducts";
 import "./products.component.scss";
 import { AddProductForm, ProductCard } from "../..";
 import { CreditCard, Table as TableIcon } from "react-feather";
+import { ProductViewProps } from "../../../types";
 
 const { Option } = Select;
 
-const ProductView = () => {
+const ProductView = ({ userName }: ProductViewProps) => {
   const {
     allProducts,
     categories,
@@ -21,16 +22,20 @@ const ProductView = () => {
     isCreateProductModal,
     createUpdateForm,
     handleSearch,
-  } = useProducts();
+    handleUpdateProduct,
+    isCreateOrUpdate,
+  } = useProducts(userName);
+
   return (
     <div className="relative top-[90px]">
       <AddProductForm
         createUpdateForm={createUpdateForm}
         closeCreateProductModal={closeCreateProductModal}
         isCreateProductModal={isCreateProductModal}
-        onFinish={handleCreateProduct}
+        onFinish={isCreateOrUpdate ? handleUpdateProduct : handleCreateProduct}
+        showId={isCreateOrUpdate}
       />
-      <div className="flex justify-end pr-4 options-container">
+      <div className="flex justify-end pr-4 mb-2 options-container">
         <Button onClick={() => showCreateProductModal()} className="mr-2">
           Add Product
         </Button>
@@ -57,6 +62,7 @@ const ProductView = () => {
           onChange={handleSearch}
           name="search"
           type="text"
+          className="search-box"
           placeholder="Search by Name"
         />
       </div>

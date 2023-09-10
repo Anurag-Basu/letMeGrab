@@ -70,7 +70,7 @@ const Navbar = (props: NavbarProps) => {
               type="text"
               className="bg-transparent btn"
             >
-              Products
+              {productView ? "Home" : "Products"}
             </Button>
             <Button
               onClick={handleLogout}

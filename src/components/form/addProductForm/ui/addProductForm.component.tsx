@@ -7,6 +7,7 @@ const AddProductForm = ({
   closeCreateProductModal,
   isCreateProductModal,
   createUpdateForm,
+  showId,
 }: AddProductsFormProps) => {
   return (
     <Modal
@@ -58,6 +59,11 @@ const AddProductForm = ({
         >
           <TextArea />
         </Form.Item>
+        {showId && (
+          <Form.Item name="id" hidden>
+            <Input type="number" />
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );

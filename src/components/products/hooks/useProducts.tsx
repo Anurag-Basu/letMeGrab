@@ -5,6 +5,7 @@ import {
   CreateProductFields,
   DataSourceType,
   ProductsType,
+  UserDataInterface,
 } from "../../../types";
 import { createDataSource } from "../functions/createDataSource";
 import { ColumnsType } from "antd/es/table";
@@ -13,17 +14,20 @@ import { Edit, Eye, Trash2 } from "react-feather";
 import { useForm } from "antd/es/form/Form";
 import { toast } from "react-toastify";
 
-const useProducts = () => {
+const useProducts = (userName: string) => {
   const [createUpdateForm] = useForm();
 
   const [categories, setCategories] = useState<string[]>([]);
   const [allProducts, setAllProducts] = useState<ProductsType[]>([]);
-  const [products, setProducts] = useState<ProductsType[]>([]);
+  const [products, setProducts] = useState<UserDataInterface>({
+    password: "",
+    products: [],
+  });
   const [isGridView, setIsGridView] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
   const [isCreateProductModal, setIsCreateProductModal] =
     useState<boolean>(false);
-  const [updateProductId, setUpdateProductId] = useState<number>();
+  const [isCreateOrUpdate, setIsCreateOrUpdate] = useState<boolean>(false);
 
   const columns: ColumnsType<DataSourceType> = [
     {
@@ -79,19 +83,47 @@ const useProducts = () => {
   ];
 
   const handleDeleteProduct = (id: number) => {
-    axios
-      .delete(`https://fakestoreapi.com/products/${id}`)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    // Since we cannot perform updates, deletions, and additions to products in the given API,
+    //  that's why I'm using localStorage to achieve those tasks.
+    // axios
+    //   .delete(`https://fakestoreapi.com/products/${id}`)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
+    const remainingProducts: UserDataInterface = {
+      password: products.password,
+      products: products.products.filter((product) => product.id != id),
+    };
+    localStorage.setItem(userName, JSON.stringify(remainingProducts));
+    setDataFirstTimeLanding();
+    toast.success("Product Deleted");
   };
 
-  //   const handleUpdateProduct = (id: number) => {
-  console.log(updateProductId);
-  //     axios
-  //       .put(`https://fakestoreapi.com/products/${id}`)
-  //       .then((res) => console.log(res))
-  //       .catch((err) => console.log(err));
-  //   };
+  const handleUpdateProduct = (values: CreateProductFields) => {
+    if (values.id) {
+      const index = products.products.findIndex(
+        (product) => product.id === values.id
+      );
+
+      const selectedProduct = {
+        ...products.products[values?.id],
+        title: values.name as string,
+        description: values.description,
+        price: values.price,
+      };
+
+      const updatedProducts = { ...products };
+      updatedProducts.products[index] = selectedProduct;
+
+      localStorage.setItem(userName, JSON.stringify(updatedProducts));
+      setDataFirstTimeLanding();
+      closeCreateProductModal();
+      toast.success("Product Updated Successful!");
+    }
+    // axios
+    //   .put(`https://fakestoreapi.com/products/${id}`)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
+  };
 
   const onChangeCategory = (value: string) => {
     let url = `https://fakestoreapi.com/products/category/${value}`;
@@ -100,9 +132,8 @@ const useProducts = () => {
       url = "https://fakestoreapi.com/products";
     }
     axios.get(url).then((res) => {
-      console.log(value, res);
       setAllProducts(res.data);
-      setProducts(res.data);
+      // setProducts(res.data);
       setDataSource(createDataSource(res.data));
     });
   };
@@ -113,55 +144,92 @@ const useProducts = () => {
 
   const showCreateProductModal = (id?: number) => {
     if (id) {
-      setUpdateProductId(id - 1);
+      setIsCreateOrUpdate(true);
       createUpdateForm.setFieldsValue({
         name: allProducts[id - 1].title,
         price: allProducts[id - 1].price,
         description: allProducts[id - 1].description,
+        id: allProducts[id - 1].id,
       });
     }
     setIsCreateProductModal(true);
   };
   const closeCreateProductModal = () => {
     setIsCreateProductModal(false);
+    setIsCreateOrUpdate(false);
     createUpdateForm.resetFields();
   };
 
   const handleCreateProduct = (values: CreateProductFields) => {
-    console.log({ values });
-    axios
-      .post("https://fakestoreapi.com/products", values)
-      .then((response) => {
-        console.log(response);
-        toast.success("Product Created");
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error(error?.code);
-      });
+    // Since we cannot perform updates, deletions, and additions to products in the given API,
+    //  that's why I'm using localStorage to achieve those tasks.
+
+    // axios
+    //   .post("https://fakestoreapi.com/products", values)
+    //   .then((response) => {
+    //     console.log(response);
+    //     toast.success("Product Created");
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     toast.error(error?.code);
+    //   });
+
+    const newProduct = {
+      id: products?.products?.length + 1,
+      title: values.name,
+      ...values,
+    };
+
+    delete newProduct.name;
+    const updatedData = {
+      password: products.password,
+      products: [...products.products, newProduct],
+    };
+    localStorage.setItem(userName, JSON.stringify(updatedData));
+    setDataFirstTimeLanding();
+    // closeCreateProductModal();
+    toast.success("Product Created Successful!");
   };
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const filteredData = products.filter((ele) =>
+    const filteredData = products.products.filter((ele) =>
       ele.title.toLowerCase().includes(value)
     );
     setAllProducts(filteredData);
     setDataSource(createDataSource(filteredData));
   };
 
-  useEffect(() => {
-    axios.get("https://fakestoreapi.com/products").then((res) => {
-      setAllProducts(res.data);
-      setProducts(res.data);
+  const setDataFirstTimeLanding = () => {
+    // Since we cannot perform updates, deletions, and additions to products in the given API,
 
-      console.log(res);
+    const userData: UserDataInterface = JSON.parse(
+      localStorage.getItem(userName) as string
+    );
+    setAllProducts(userData.products);
+    setProducts(userData);
+    setDataSource(createDataSource(userData.products));
 
-      setDataSource(createDataSource(res.data));
-    });
     axios.get("https://fakestoreapi.com/products/categories").then((res) => {
       setCategories(res.data);
     });
+  };
+
+  useEffect(() => {
+    // Since we cannot perform updates, deletions, and additions to products in the given API,
+    //  that's why I'm using localStorage to achieve those tasks.
+
+    // axios.get("https://fakestoreapi.com/products").then((res) => {
+    //   setAllProducts(res.data);
+    //   setProducts(res.data);
+
+    //   console.log({ res, userName });
+
+    //   setDataSource(createDataSource(res.data));
+    // });
+    setDataFirstTimeLanding();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
@@ -178,6 +246,8 @@ const useProducts = () => {
     handleCreateProduct,
     createUpdateForm,
     handleSearch,
+    handleUpdateProduct,
+    isCreateOrUpdate,
   };
 };
 

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { FormTypes, SignInFormTypes } from "../../../types";
+import { FormTypes, SignInFormTypes, UserDataInterface } from "../../../types";
 import { useForm } from "antd/es/form/Form";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const useApp = () => {
   const [signInForm] = useForm();
@@ -26,9 +27,13 @@ const useApp = () => {
 
   const handleLoginFormSubmit = (value: SignInFormTypes) => {
     const userPass = localStorage.getItem(value.username);
-    console.log({ value, userPass });
-
-    if (!userPass || value.password != userPass) {
+    let parsedData: UserDataInterface | null = null;
+    if (userPass) {
+      parsedData = JSON.parse(userPass);
+      console.log({ value, userPass, parsedData });
+    }
+    console.log(value, parsedData);
+    if (!userPass || value.password != parsedData?.password) {
       return toast.error("invalid username/Password");
     }
     signInForm.resetFields();
@@ -45,12 +50,21 @@ const useApp = () => {
   const handleLogout = () => {
     setIsLogin(false);
     setProductView(false);
+    toast.success("Logged Out");
   };
 
-  const handleSignUpForm = (formData: FormTypes) => {
+  const handleSignUpForm = async (formData: FormTypes) => {
     if (formData.password === formData.confirm_password) {
+      let allProducts;
+      await axios.get("https://fakestoreapi.com/products").then((res) => {
+        allProducts = res.data;
+      });
+      const userData = {
+        password: formData.password,
+        products: allProducts,
+      };
       // Store user data in local storage
-      localStorage.setItem(formData.username, formData.password);
+      localStorage.setItem(formData.username, JSON.stringify(userData));
       setIsModalOpen?.(false);
       signUpForm.resetFields();
       toast.success("Signup successful!");

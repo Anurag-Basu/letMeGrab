@@ -33,7 +33,7 @@ function App() {
         userName={userName}
       />
       {productView ? (
-        <ProductView />
+        <ProductView userName={userName} />
       ) : (
         <Home
           handleSignUpForm={handleSignUpForm}
