@@ -25,16 +25,22 @@ const Home = ({
   isLoginModalOpen,
   handleLoginCloseModal,
   handleLoginFormSubmit,
+  signInForm,
+  signUpForm,
+  handleSignUpForm,
 }: HomeProps) => {
   return (
     <>
-      <div className="page-body-container" id="home top-[50px]">
+      <div className="page-body-container top-[50px]" id="home">
         <SignUp
+        handleSignUpForm={handleSignUpForm}
+          signUpForm={signUpForm}
           setIsModalOpen={setIsModalOpen}
           isModalOpen={isModalOpen}
           handleCancel={handleCancel}
         />
         <SignIn
+          signInForm={signInForm}
           isOpen={isLoginModalOpen}
           handleCancel={handleLoginCloseModal}
           onFinish={handleLoginFormSubmit}

@@ -1,7 +1,12 @@
 import { Button, Form, Input, Modal } from "antd";
 import { SignInProps } from "../../../../types";
 
-const SignIn = ({ isOpen, handleCancel, onFinish }: SignInProps) => {
+const SignIn = ({
+  isOpen,
+  handleCancel,
+  onFinish,
+  signInForm,
+}: SignInProps) => {
   return (
     <Modal
       title="Sign In"
@@ -22,6 +27,7 @@ const SignIn = ({ isOpen, handleCancel, onFinish }: SignInProps) => {
       ]}
     >
       <Form
+        form={signInForm}
         onFinish={onFinish}
         name="signin-form"
         id="sing-in-form"

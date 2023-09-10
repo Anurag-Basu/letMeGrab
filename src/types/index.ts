@@ -3,9 +3,12 @@ export interface SignUpProps {
   isModalOpen: boolean;
   handleCancel: () => void;
   setIsModalOpen: any;
+  signUpForm: any;
+  handleSignUpForm: (formData: FormTypes) => void;
 }
 
 export interface SignInProps {
+  signInForm: any;
   isOpen: boolean;
   onFinish: (e: SignInFormTypes) => void;
   handleCancel: () => void;
@@ -24,7 +27,10 @@ export interface FormTypes extends SignInFormTypes {
 export interface NavbarProps {
   handleOpenModal: () => void;
   handleLoginOpenModal: () => void;
+  handleLogout: () => void;
+  handleShowProductView: () => void;
   isLogin: boolean;
+  productView: boolean;
   userName: string;
 }
 
@@ -32,8 +38,11 @@ export interface HomeProps {
   isModalOpen: boolean;
   handleCancel: () => void;
   setIsModalOpen: any;
+  signInForm: any;
+  signUpForm: any;
   isLoginModalOpen: boolean;
   handleLoginCloseModal: () => void;
+  handleSignUpForm: (formData: FormTypes) => void;
   handleLoginFormSubmit: (val: SignInFormTypes) => void;
 }
 

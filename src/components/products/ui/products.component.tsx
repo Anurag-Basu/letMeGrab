@@ -1,8 +1,8 @@
-import { Button, Select, Table } from "antd";
+import { Button, Input, Select, Table } from "antd";
 import useProducts from "../hooks/useProducts";
 import "./products.component.scss";
 import { AddProductForm, ProductCard } from "../..";
-import { CreditCard, Hash } from "react-feather";
+import { CreditCard, Table as TableIcon } from "react-feather";
 
 const { Option } = Select;
 
@@ -20,16 +20,16 @@ const ProductView = () => {
     showCreateProductModal,
     isCreateProductModal,
     createUpdateForm,
+    handleSearch,
   } = useProducts();
   return (
-    <>
+    <div className="relative top-[90px]">
       <AddProductForm
         createUpdateForm={createUpdateForm}
         closeCreateProductModal={closeCreateProductModal}
         isCreateProductModal={isCreateProductModal}
         onFinish={handleCreateProduct}
       />
-      <h2 className="text-center">All Products</h2>
       <div className="flex justify-end pr-4 options-container">
         <Button onClick={() => showCreateProductModal()} className="mr-2">
           Add Product
@@ -38,7 +38,7 @@ const ProductView = () => {
           {isGridView ? (
             <CreditCard width={20} height={20} />
           ) : (
-            <Hash width={20} height={20} />
+            <TableIcon width={20} height={20} />
           )}
         </Button>
         <Select defaultValue="all" onChange={onChangeCategory}>
@@ -53,6 +53,12 @@ const ProductView = () => {
             );
           })}
         </Select>
+        <Input
+          onChange={handleSearch}
+          name="search"
+          type="text"
+          placeholder="Search by Name"
+        />
       </div>
       {isGridView ? (
         <div>
@@ -65,7 +71,7 @@ const ProductView = () => {
           })}
         </div>
       )}
-    </>
+    </div>
   );
 };
 

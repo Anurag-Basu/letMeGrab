@@ -1,15 +1,12 @@
 import { Button, Form, Input, Modal } from "antd";
 import { SignUpProps } from "../../../../types";
-import useSignUp from "../hooks/useSignUp";
 
 const SignUp = ({
   isModalOpen,
-  // handleOk,
+  signUpForm,
   handleCancel,
-  setIsModalOpen,
+  handleSignUpForm,
 }: SignUpProps) => {
-  // console.log(handleOk);
-  const { form, handleSignUpForm } = useSignUp(setIsModalOpen);
   return (
     <div>
       <Modal
@@ -31,10 +28,10 @@ const SignUp = ({
         ]}
       >
         <Form
+          form={signUpForm}
           name="signup-form"
           onFinish={handleSignUpForm}
           id="sing-up-form"
-          form={form}
           layout="vertical"
         >
           <Form.Item

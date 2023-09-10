@@ -1,11 +1,22 @@
 import { NavbarProps } from "../../../types";
 import Logo from "../../../assets/Logo.png";
 import { Anchor, Button } from "antd";
+import { User } from "react-feather";
 
 const Navbar = (props: NavbarProps) => {
+  const {
+    handleOpenModal,
+    handleLoginOpenModal,
+    isLogin,
+    userName,
+    handleShowProductView,
+    productView,
+    handleLogout,
+  } = props;
+
   const items = [
     {
-      key: "part-1",
+      key: "home",
       href: "#home",
       title: "Home",
     },
@@ -30,23 +41,39 @@ const Navbar = (props: NavbarProps) => {
       title: "Contact Us",
     },
   ];
-  const { handleOpenModal, handleLoginOpenModal, isLogin, userName } = props;
   return (
-    <div className="fixed top-0 z-50 flex flex-row items-center w-full p-5 bg-blue-950">
+    <div
+      className={`${
+        isLogin ? "justify-between" : ""
+      } fixed top-0 mb-[80px] z-50 flex flex-row items-center w-full p-5 bg-blue-950`}
+    >
       <div className="flex items-center">
         <img src={Logo} alt="Logo" className="h-10 mr-2 w-30" />
       </div>
-
-      <div className="flex items-center justify-center flex-grow text-white">
-        <Anchor className="text-white" direction="horizontal" items={items} />
-      </div>
+      {!isLogin || !productView ? (
+        <div className="flex items-center justify-center flex-grow text-white">
+          <Anchor className="text-white" direction="horizontal" items={items} />
+        </div>
+      ) : (
+        <></>
+      )}
 
       <div className="flex items-center justify-end">
         {isLogin ? (
           <>
-            <span className="text-white">{userName}</span>
+            <div className="flex items-center justify-center text-white">
+              {" "}
+              <User size={20} className="mr-1" /> {userName.toUpperCase()}
+            </div>
             <Button
-              onClick={handleOpenModal}
+              onClick={handleShowProductView}
+              type="text"
+              className="bg-transparent btn"
+            >
+              Products
+            </Button>
+            <Button
+              onClick={handleLogout}
               className="bg-transparent btn"
               type="text"
             >

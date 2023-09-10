@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   CreateProductFields,
   DataSourceType,
@@ -11,12 +11,14 @@ import { ColumnsType } from "antd/es/table";
 import { Button } from "antd";
 import { Edit, Eye, Trash2 } from "react-feather";
 import { useForm } from "antd/es/form/Form";
+import { toast } from "react-toastify";
 
 const useProducts = () => {
   const [createUpdateForm] = useForm();
 
   const [categories, setCategories] = useState<string[]>([]);
   const [allProducts, setAllProducts] = useState<ProductsType[]>([]);
+  const [products, setProducts] = useState<ProductsType[]>([]);
   const [isGridView, setIsGridView] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
   const [isCreateProductModal, setIsCreateProductModal] =
@@ -100,6 +102,7 @@ const useProducts = () => {
     axios.get(url).then((res) => {
       console.log(value, res);
       setAllProducts(res.data);
+      setProducts(res.data);
       setDataSource(createDataSource(res.data));
     });
   };
@@ -107,6 +110,7 @@ const useProducts = () => {
   const handleSwitchView = () => {
     setIsGridView((prev) => !prev);
   };
+
   const showCreateProductModal = (id?: number) => {
     if (id) {
       setUpdateProductId(id - 1);
@@ -129,15 +133,28 @@ const useProducts = () => {
       .post("https://fakestoreapi.com/products", values)
       .then((response) => {
         console.log(response);
+        toast.success("Product Created");
       })
       .catch((error) => {
         console.log(error);
+        toast.error(error?.code);
       });
+  };
+
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const filteredData = products.filter((ele) =>
+      ele.title.toLowerCase().includes(value)
+    );
+    setAllProducts(filteredData);
+    setDataSource(createDataSource(filteredData));
   };
 
   useEffect(() => {
     axios.get("https://fakestoreapi.com/products").then((res) => {
       setAllProducts(res.data);
+      setProducts(res.data);
+
       console.log(res);
 
       setDataSource(createDataSource(res.data));
@@ -160,6 +177,7 @@ const useProducts = () => {
     dataSource,
     handleCreateProduct,
     createUpdateForm,
+    handleSearch,
   };
 };
 
