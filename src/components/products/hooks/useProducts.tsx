@@ -190,7 +190,7 @@ const useProducts = (userName: string) => {
     };
     localStorage.setItem(userName, JSON.stringify(updatedData));
     setDataFirstTimeLanding();
-    // closeCreateProductModal();
+    closeCreateProductModal();
     toast.success("Product Created Successful!");
   };
 
